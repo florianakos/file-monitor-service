@@ -18,7 +18,7 @@ WORKDIR /home/file-monitor-service
 
 COPY . .
 
-RUN go build webserver.go
+RUN cd /home/file-monitor-service && go build webserver.go
 
 CMD ["./script.sh"]
 CMD ["./webserver"]
