@@ -29,7 +29,7 @@
     - name: Deploy git Rrepository
       git:
         repo: git@github.com:florianakos/file-monitor-service.git
-        dest: /home/flrnks/
+        dest: /home/flrnks/repo
 
     - name: "Build image"
       docker_image:
