@@ -20,6 +20,9 @@ func renderResponse(w http.ResponseWriter, code int, which string, m map[string]
 	case "upload":
 		tmpl := template.Must(template.ParseFiles("static_files/upload.html"))
 		tmpl.Execute(w, m)
+	case "landing":
+		tmpl := template.Must(template.ParseFiles("static_files/landing.html"))
+		tmpl.Execute(w, m)
 	case "stats":
 		tmpl := template.Must(template.ParseFiles("static_files/stats.html"))
 		tmpl.Execute(w, m)
@@ -164,10 +167,16 @@ func emailHandler(w http.ResponseWriter, r *http.Request) {
 	renderResponse(w, 200, "email", nil)
 }
 
+// handler for landing page at "/"
+func landingHandler(w http.ResponseWriter, r *http.Request) {
+	renderResponse(w, 200, "landing", nil)
+}
+
 func main() {
 	// basic list of endpoints served by the web interface of the service
 	http.HandleFunc("/stats", statsHandler)
 	http.HandleFunc("/email", emailHandler)
 	http.HandleFunc("/upload", uploadFileHandler)
+	http.HandleFunc("/", landingHandler)
 	http.ListenAndServe(":8080", nil)
 }
