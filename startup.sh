@@ -2,4 +2,4 @@
 
 ./monitor_service.sh &
 
-./webserver &
+./webserver
