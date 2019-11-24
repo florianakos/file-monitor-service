@@ -1,6 +1,4 @@
 FROM ubuntu:latest
-
-
 RUN apt update && apt install -y \
     inotify-tools \
     golang \
@@ -8,19 +6,11 @@ RUN apt update && apt install -y \
     sqlite3 \
     git \
     curl \
-
-RUN go get github.com/mattn/go-sqlite3
-
-
+RUN go get "github.com/mattn/go-sqlite3"
 RUN mkdir -p /home/file-monitor-service
-
 WORKDIR /home/file-monitor-service
-
 COPY . .
-
 RUN cd /home/file-monitor-service && go build webserver.go
-
 CMD ["./script.sh"]
 CMD ["./webserver"]
-
 EXPOSE 8080/tcp
