@@ -5,7 +5,7 @@ RUN apt update && apt install -y \
     bc  \
     sqlite3 \
     git \
-    curl \
+    curl 
 RUN go get "github.com/mattn/go-sqlite3"
 RUN mkdir -p /home/file-monitor-service
 WORKDIR /home/file-monitor-service
