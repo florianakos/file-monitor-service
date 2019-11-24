@@ -42,7 +42,9 @@
 
     # Creates the number of containers defined by the variable create_containers, using default values
     - name: Deploy archive service container on host
+      become: true
       docker_container:
         name: file-archive-service
         image: file-archive-service
+        command: docker run -it -d -p 8080:8080/tcp file-archive-service
         state: present
