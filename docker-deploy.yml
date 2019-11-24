@@ -7,7 +7,7 @@
 
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      loop: [ 'golang', 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
 
     - name: Add Docker GPG apt Key
       apt_key:
@@ -27,15 +27,16 @@
         name: docker
 
     - name: Deploy git Rrepository
+      become: yes
       git:
-        repo: git@github.com:florianakos/file-monitor-service.git
+        repo: https://github.com/florianakos/file-monitor-service.git
         dest: /home/flrnks/repo
 
     - name: "Build image"
       docker_image:
         name: file-archive-service
         build:
-          path: docker
+          path: /home/flrnks/repo
           pull: true
         source: build
 
