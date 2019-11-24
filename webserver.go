@@ -5,9 +5,11 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"net/http"
+	"net/smtp"
 	"log"
 	"io/ioutil"
 	"html/template"
+	"strings"
 )
 
 // function that renders the correct html template with given data
@@ -161,10 +163,64 @@ func statsHandler(w http.ResponseWriter, r *http.Request) {
 						           "lastLogs": selectLatestLogs(db)})
 }
 
+// function that wraps the SMTP api for sending email via GMAL
+func sendMail(appPW string, to string, body string) error {
+	// hardcoded to send from my account for now
+	from := "florian.akos.szabo@gmail.com"
+	// message layout
+	msg := "From: " + from + "\n" +
+		"To: " + to + "\n" +
+		"Subject: Update from archive service\n\n" +
+		body
+
+	// SMTP call to gmail
+	err := smtp.SendMail("smtp.gmail.com:587",
+		smtp.PlainAuth("", from, appPW, "smtp.gmail.com"),
+		from, []string{to}, []byte(msg))
+
+	if err != nil {
+		log.Printf("smtp error: %s", err)
+		return err
+	}
+	return nil
+}
+
 // handler function to send email notifications
-// TODO
 func emailHandler(w http.ResponseWriter, r *http.Request) {
-	renderResponse(w, 200, "email", nil)
+	// render page normally if request was GET
+	log.Println("Email handler hit with ...", r.Method)
+	if r.Method == "GET" {
+		renderResponse(w, 200, "email", map[string]interface{}{"msg":"Please give an API pw and email to sent to."})
+    // process form data and send email if request was POST
+	} else if r.Method == "POST" {
+		// needed for parsing form data from HTML fields
+		err := r.ParseForm()
+	    if err != nil {
+	        log.Println(err)           
+	    }
+		
+		// open DB connection to get some stats for the email
+		db, err := sql.Open("sqlite3", "stats.db")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+
+		// construct the message body
+		emailBody := "Hello\n\nHere are some stats from the latest submissions as you requested:\n\n" +
+			strings.Join(selectLatestLogs(db), "\n") +
+			"\n\nThank you for using our service!\n\nBR,\nAdmin"
+
+		// send the email using the PW that was passed in HTML field (DOES NOT WORK OTHERWISE)
+		err = sendMail(r.PostFormValue("pass"), r.PostFormValue("email"), emailBody)
+		
+		// check for any errors and render response accordingly
+		if err != nil {
+			renderResponse(w, 400, "email", map[string]interface{}{"msg":"Error sending email!"})
+		} else {
+			renderResponse(w, 200, "email", map[string]interface{}{"msg":"Email sent with stats and updates."})
+		}
+	}
 }
 
 // handler for landing page at "/"

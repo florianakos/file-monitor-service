@@ -31,7 +31,20 @@
           border-radius: 4px;
           background-color: #44AAB5
         }
-</style>
+    </style>
+    <script type="text/javascript">
+        function empty()
+        {
+              var x;
+              x = document.getElementById("email").value;
+              var y;
+              y = document.getElementById("pass").value;
+              if ((x == "") || (y == "")) {
+                  alert("Enter a valid password and destinatoin email");
+                  return false;
+              };
+        }
+    </script>
   </head>
   <body>
       <div class='center'>
@@ -41,6 +54,18 @@
         <a href="/stats"> GET STATS </a>
         <a href="/email"> EMAIL </a>
       <h3>TODO</h3>
+      <form action="/email" method="post">
+          <div>
+            <label for="pass">Pass:</label>
+            <input type="password" id="pass" name="pass">
+          </div>
+          <div>
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email">
+          </div>
+          <input type="submit" value="Send Stats" onclick="return empty()" >
+      </form>
+      <br>{{.msg}}
     </div>
   </body>
 </html>
