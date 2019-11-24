@@ -1,0 +1,47 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: Deploy git Rrepository
+      git:
+        repo: git@github.com:florianakos/file-monitor-service.git
+        dest: /home/flrnks/
+
+    - name: "Build image"
+      docker_image:
+        name: file-archive-service
+        build:
+          path: docker
+          pull: true
+        source: build
+
+    # Creates the number of containers defined by the variable create_containers, using default values
+    - name: Deploy archive service container on host
+      docker_container:
+        name: file-archive-service
+        image: file-archive-service
+        state: present
