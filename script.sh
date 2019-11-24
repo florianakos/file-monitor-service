@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TARGET=incoming
-PROCESSED=processed
+TARGET=monitored_folder
+PROCESSED=processed_files
 
 inotifywait -m -e create -e moved_to --format "%f" $TARGET \
         | while read FILENAME
