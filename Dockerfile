@@ -11,8 +11,6 @@ RUN go get "github.com/mattn/go-sqlite3"
 RUN mkdir -p /home/file-monitor-service
 WORKDIR /home/file-monitor-service
 COPY . .
-RUN cd /home/file-monitor-service && go build webserver.go
-RUN chmod u+x script.sh
-CMD ["/bin/bash", "./script.sh"]
-CMD ["./webserver"]
+RUN go build webserver.go
+CMD ["/bin/bash", "startup.sh"]
 EXPOSE 8080/tcp
