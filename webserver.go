@@ -14,7 +14,7 @@ import (
 func renderResponse(w http.ResponseWriter, code int, which string, m map[string]interface{}) {
 	// set header values properly
 	w.WriteHeader(code)
-	w.Header().Set("Content-Type", "text/html; charset=UTF-8")	
+	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 	// determine the file and render it
 	switch which {
 	case "upload":
@@ -50,7 +50,7 @@ func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
 	    defer file.Close()
 
 	    // Create a temporary file within our temp-images directory that follows a particular naming pattern
-	    fileSave, err := ioutil.TempFile("monitored_folder", "*_"+handler.Filename)
+	    fileSave, err := ioutil.TempFile("monitored_folder", handler.Filename+"*")
 	    if err != nil {
 	        fmt.Println(err)
 	    }
@@ -61,7 +61,7 @@ func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
 	    if err != nil {
 	        fmt.Println(err)
 	    }
-		
+
 	    // write this byte array to our temporary file
 	    fileSave.Write(fileBytes)
 		if _, err := fileSave.Write(fileBytes); err != nil {
@@ -121,7 +121,7 @@ func selectAvgCompRate(db *sql.DB) float64 {
 	return avg
 }
 
-// convenience function that gets the latest 10 logs from DB 
+// convenience function that gets the latest 10 logs from DB
 func selectLatestLogs(db *sql.DB) []string {
 	rows, err := db.Query("select time, file, comp_rate from data ORDER BY time DESC LIMIT 10;")
 	if err != nil {
@@ -131,7 +131,7 @@ func selectLatestLogs(db *sql.DB) []string {
 
 	var data []string
  	var avg float64
-	var time int 
+	var time int
 	var name string
 	for rows.Next() {
 		err = rows.Scan(&time, &name, &avg)
@@ -154,14 +154,14 @@ func statsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	
-	renderResponse(w, 200, "stats", 
+
+	renderResponse(w, 200, "stats",
 			map[string]interface{}{"highestCompRate": selectHighestComp(db),
 						 	       "averageCompRate": selectAvgCompRate(db),
 						           "lastLogs": selectLatestLogs(db)})
 }
 
-// handler function to send email notifications 
+// handler function to send email notifications
 // TODO
 func emailHandler(w http.ResponseWriter, r *http.Request) {
 	renderResponse(w, 200, "email", nil)
