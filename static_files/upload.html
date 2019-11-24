@@ -31,7 +31,18 @@
           border-radius: 4px;
           background-color: #44AAB5
         }
-</style>
+    </style>
+    <script type="text/javascript">
+        function empty()
+        {
+              var x;
+              x = document.getElementById("roll-input").value;
+              if (x == "") {
+                  alert("Enter a Valid Roll Number");
+                  return false;
+              };
+        }
+    </script>
   </head>
   <body>
       <div class='center'>
@@ -43,8 +54,8 @@
       
           <h3>Please select your file to upload and compress:</h3>
           <form enctype="multipart/form-data" action="/upload" method="post">
-            <input type="file" name="myFile" />
-            <input type="submit" value="upload" />
+            <input type="file" name="myFile" id="roll-input"/>
+            <input type="submit" value="upload" onclick="return empty()"/>
           </form>
           <br>{{.msg}}
     </div>
