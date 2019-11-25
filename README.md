@@ -54,7 +54,7 @@ At the end of this process you should have a functioning service deployed on as 
 
 ### Usage
 
-The deployed service implements a web UI through which it is possibleto upload files. These files will be saved to a folder on the host machine, which is set up with the monitoring service. The service will watch for incoming files and compress them via the gzip CLI utility then store them in a different folder.
+The deployed service implements a web UI through which it is possible to upload files. These files will be saved to a folder on the host machine, which is set up with the monitoring service. The service will watch for incoming files and compress them via the gzip CLI utility then store them in a different folder.
 
 To access logs the user can navigate to `/stats` which provides a list of most recently uploaded files, as well as some statistics such as average compression ratio of all files and the name of the most highly compressed file in the database.
 

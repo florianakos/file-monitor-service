@@ -7,7 +7,7 @@
     <link href="[https://fonts.googleapis.com/css?family=Roboto](https://fonts.googleapis.com/css?family=Roboto)" rel="stylesheet">
     <script src="[http://code.jquery.com/jquery-latest.min.js](http://code.jquery.com/jquery-latest.min.js)" type="text/javascript"></script>
     <title>Send email</title>
-    <style> 
+    <style>
         h1 {
           font-family: 'Roboto', sans-serif;
         }
@@ -50,18 +50,22 @@
       <div class='center'>
         <h1> SEND MAIL </h1>
         <a href="/"> HOME</a>
-        <a href="/upload"> UPLOAD FILE</a> 
+        <a href="/upload"> UPLOAD FILE</a>
         <a href="/stats"> GET STATS </a>
         <a href="/email"> EMAIL </a>
       <h3>TODO</h3>
       <form action="/email" method="post">
           <div>
-            <label for="pass">Pass:</label>
+            <label for="pass">Gmal App PW:</label>
             <input type="password" id="pass" name="pass">
           </div>
           <div>
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email">
+            <label for="email">From:</label>
+            <input type="email" id="email-from" name="email-from">
+          </div>
+          <div>
+            <label for="email">To:</label>
+            <input type="email" id="email-to" name="email-to">
           </div>
           <input type="submit" value="Send Stats" onclick="return empty()" >
       </form>

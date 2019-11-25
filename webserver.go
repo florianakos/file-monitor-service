@@ -164,9 +164,7 @@ func statsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // function that wraps the SMTP api for sending email via GMAL
-func sendMail(appPW string, to string, body string) error {
-	// hardcoded to send from my account for now
-	from := "florian.akos.szabo@gmail.com"
+func sendMail(appPW string, from string, to string, body string) error {
 	// message layout
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
@@ -196,9 +194,9 @@ func emailHandler(w http.ResponseWriter, r *http.Request) {
 		// needed for parsing form data from HTML fields
 		err := r.ParseForm()
 	    if err != nil {
-	        log.Println(err)           
+	        log.Println(err)
 	    }
-		
+
 		// open DB connection to get some stats for the email
 		db, err := sql.Open("sqlite3", "stats.db")
 		if err != nil {
@@ -212,8 +210,8 @@ func emailHandler(w http.ResponseWriter, r *http.Request) {
 			"\n\nThank you for using our service!\n\nBR,\nAdmin"
 
 		// send the email using the PW that was passed in HTML field (DOES NOT WORK OTHERWISE)
-		err = sendMail(r.PostFormValue("pass"), r.PostFormValue("email"), emailBody)
-		
+		err = sendMail(r.PostFormValue("pass"), r.PostFormValue("email-from"), r.PostFormValue("email-to"), emailBody)
+
 		// check for any errors and render response accordingly
 		if err != nil {
 			renderResponse(w, 400, "email", map[string]interface{}{"msg":"Error sending email!"})
