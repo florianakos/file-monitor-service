@@ -80,10 +80,10 @@ The simple SQLite3 database is also contained within the repository: `stats.db`.
 
 Since our service is hosted within one docker container, there was a need for a way to start two services in one command, hence the script was created which calls the monitor bash script and the compiled code of the go web server.
 
-### Dockerfile
+#### Dockerfile
 
 The `Dockerfile` is used to define an image that gets created on each Ansible host that gets the deployment package from the Ansible master node. It is based on the Ubuntu docker base image. In addition to pre-installed packages, some additional tools re installed, such as `[inotify-tools, golang, bc, sqlite3, git]`. After copying and compiling the source code, the final step exposes port 8080 from the container to the host machine.
 
 #### Ansible Playbook
 
-This file (`ansible-deploy.yml`) is used to control how the software on remote ansible hosts is installed. Before the image defined by the Dockerfile can be built, some packages are needed to be installed on each host. Most notable steps are installing the docker service and cloning of this repository where the docker file and source code hosted. The final two tasks in the playbook will build this said docker image and run it.
+This file (`ansible-deploy.yml`) is used to control how the software on remote Ansible hosts is installed. Before the image defined by the Dockerfile can be built, some packages are needed to be installed on each host. Most notable steps are installing the docker service and cloning of this repository where the docker file and source code hosted. The final two tasks in the playbook will build this said docker image and run it.
