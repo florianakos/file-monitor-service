@@ -15,14 +15,14 @@ $ sudo apt-add-repository ppa:ansible/ansible
 $ sudo apt install ansible -y
 ```
 
-Next you need to clone this repository to the same Ansible Master node and set up the Slave hosts which will be configured via SSH process. To do this edit the file: `/etc/ansible/hosts` and put there:
+Then on the Ansible master node you need to set up the Slave hosts which will be configured via SSH process. To do this edit the file: `/etc/ansible/hosts` and put there:
 
 ```bash
 host1 ansible_host=192.168.56.5
 host2 ansible_host=192.168.56.6
 ```
 
-You will need to generate an SSH keypair and install it to the remote machines via the below command:
+You will also need to create an SSH key pair an and install it as trusted key to the remote machines via the below command:
 
 ```bash
 $ ssh-copy-id -i path/to/ssh/id.pub 'username'@192.168.56.5
@@ -49,3 +49,15 @@ This will execute a ping but not the traditional type via ICMP protocol, but a p
 ```bash
 $ ansible-playbook ansible-deploy.yml
 ```
+
+At the end of this process you should have a functioning service deployed on as many ansible slave nodes as you configured. To test, you should open a web browser from a machine that has IP connectivity to the ansible nodes and then visit the URL: `http://NODE_IP:8080/` to see the landing page.
+
+### Usage
+
+The deployed service implements a web UI through which it is possibleto upload files. These files will be saved to a folder on the host machine, which is set up with the monitoring service. The service will watch for incoming files and compress them via the gzip CLI utility then store them in a different folder.
+
+To access logs the user can navigate to `/stats` which provides a list of most recently uploaded files, as well as some statistics such as average compression ratio of all files and the name of the most highly compressed file in the database.
+
+To request similar statistics via email, the user can navigate to `/email` where they need to enter a valid App Password for google email as well as a source and a target email address where the email will be sent. It is important to note that email sending will only work if the source account is from Gmail, and the app password was generated for this same user account through the Google Account Security page. This requirement was necessary to avoid having to hardcode a single App Password and then publishing it in a public Github repository.
+
+TODO: Implement new field for the source email address, instead of my own email...
