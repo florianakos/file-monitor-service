@@ -1,14 +1,14 @@
 # File monitoring service
 
-This repo was created to demonstrate a project which aims to create a service that can accept files, store them and apply compression automatically by specifying a location that is monitored for new arrivals. For this purpose a web frontend was created that lets clients update files, check event logs and request email notifications as well.
+This repository hold a small project which implements a service that can monitor and compress files in a folder. For this purpose a web frontend was created that lets clients upload files , check event logs and request email notifications as well.
 
-The project was set up to use a Dockerfile to define how a container image should be built, and Ansible to do the actual step of deployment to remote hosts. Below is an overview of the architecture whih was used for development and testing.
+The project was set up in a way that it can be deployed via Ansible, which uses the Dockerfile in the repo to build the container image used to run the service on as many hosts as needed. Below is an overview of the architecture which was used for development and testing.
 
 ![Ansible & Docker overview](static_files/overview.png)
 
-## Setup process
+## Ansible setup process
 
-Ideally this is meant to be cloned to an Ansible Master node, which controls some Ansible Hosts. Since Ansible uses SSH-based communication, there is no need to set up any software in advance. To install Ansible on the master host (assuming its Ubuntu/Debian based):
+Follow these steps to install Ansible on the master host (assuming its Ubuntu/Debian based):
 
 ```bash
 $ sudo apt update
@@ -22,6 +22,7 @@ Then on the Ansible master node you need to set up the Slave hosts which will be
 ```bash
 host1 ansible_host=192.168.56.5
 host2 ansible_host=192.168.56.6
+host3 ansible_host=...
 ```
 
 You will also need to create an SSH key pair an and install it as trusted key to the remote machines via the below command:
@@ -31,16 +32,16 @@ $ ssh-copy-id -i path/to/ssh/id.pub 'username'@192.168.56.5
 $ ssh-copy-id -i path/to/ssh/id.pub 'username'@192.168.56.6
 ```
 
-Next you need to log in to each host and modify the `/etc/sudoers` file to allow the users in sudo group to execute sudo commands without requiring the password. To achieve this you should change line as follows:
+Next you will need modify the `/etc/sudoers` file on each ansible host, to allow members of sudo group to execute sudo commands without typing in the password. To achieve this you should change line as follows:
 
 ```bash
->>> OLD VERSION:
+>>> LOOK FOR LINE:
 %sudo ALL = (ALL:ALL) ALL
->>> NEW VERSION:
+>>> CHANE TO:
 %sudo ALL = (ALL:ALL) NOPASSWD: ALL
 ```
 
-Finally you are ready to test the connection by executing the below command to see if Ansible master node can access the configured slave nodes.
+Finally you are ready to test the connection by executing the below command to see if Ansible master node can reach the configured slave nodes.
 
 ```bash
 $ ansible ping -m all
@@ -52,11 +53,11 @@ This will execute a ping but not the traditional type via ICMP protocol, but a p
 $ ansible-playbook ansible-deploy.yml
 ```
 
-At the end of this process you should have a functioning service deployed on as many ansible slave nodes as you configured. To test, you should open a web browser from a machine that has IP connectivity to the ansible nodes and then visit the URL: `http://NODE_IP:8080/` to see the landing page.
+At the end of this process you should have a functioning service deployed on as many Ansible slave nodes as you configured in the `/etc/ansible/hosts` file. To test the service, you should open a web browser from a machine that has IP connectivity to any of the Ansible hosts, and then visit the URL: `http://ansible_host_ip:8080/` to see the landing page of the service.
 
-## Usage
+## How To Use
 
-The deployed service implements a web UI through which it is possible to upload files. These files will be saved to a folder on the host machine, which is set up with the monitoring service. The service will watch for incoming files and compress them via the gzip CLI utility then store them in a different folder.
+The service implements a web interface, through which it is possible to upload files. These files will be saved to a folder on the host machine, which is set up with the monitoring service. The service will watch for incoming files and compress them via the gzip CLI utility then store them in a different folder.
 
 To access logs the user can navigate to `/stats` which provides a list of most recently uploaded files, as well as some statistics such as average compression ratio of all files and the name of the most highly compressed file in the database.
 
