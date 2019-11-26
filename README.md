@@ -4,6 +4,8 @@ This repo was created to demonstrate a project which aims to create a service th
 
 The project was set up to use a Dockerfile to define how a container image should be built, and Ansible to do the actual step of deployment to remote hosts. As a requirement, the project needs to be run on an Ansible
 
+![Image of Yaktocat](static_files/overview.png)
+
 ## Setup process
 
 Ideally this repo should be cloned to an Ansible Master node, which controls some Ansible Hosts. Since Ansible uses SSH-based communication, there is no need to set up any software in advance. To install Ansible on the master host (assuming its Ubuntu/Debian based):
