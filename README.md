@@ -4,7 +4,7 @@ This repo was created to demonstrate a project which aims to create a service th
 
 The project was set up to use a Dockerfile to define how a container image should be built, and Ansible to do the actual step of deployment to remote hosts. Below is an overview of the architecture whih was used for development and testing.
 
-![Image of Yaktocat](static_files/overview.png)
+![Ansible & Docker overview](static_files/overview.png)
 
 ## Setup process
 
@@ -65,6 +65,9 @@ To request similar statistics via email, the user can navigate to `/email` where
 ## Explanation of features and implementation
 
 Here I will briefly explain the different features and components that make up this service.
+
+![Service Composition](static_files/service-composition.png)
+
 
 ### Monitor service
 
