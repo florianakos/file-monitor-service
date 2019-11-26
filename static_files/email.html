@@ -36,10 +36,12 @@
         function empty()
         {
               var x;
-              x = document.getElementById("email").value;
+              x = document.getElementById("email-from").value;
               var y;
-              y = document.getElementById("pass").value;
-              if ((x == "") || (y == "")) {
+              y = document.getElementById("email-to").value;
+              var z;
+              z = document.getElementById("pass").value;
+              if ((x == "") || (y == "") || (z == "")) {
                   alert("Enter a valid password and destinatoin email");
                   return false;
               };
