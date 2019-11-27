@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"html/template"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/smtp"
-	"log"
-	"io/ioutil"
-	"html/template"
 	"strings"
 )
 
@@ -39,44 +39,44 @@ func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
 	// if request method is GET, we serve the simple static upload form
 	if r.Method == "GET" {
 		renderResponse(w, 200, "upload", map[string]interface{}{"msg": ""})
-    } else if r.Method == "POST" {
+	} else if r.Method == "POST" {
 		log.Println("File Upload Endpoint Incoming request")
 
-	    // Parse our multipart form, 10 << 20 specifies a maximum upload of 10 MB files.
-	    r.ParseMultipartForm(10 << 20)
-	    file, handler, err := r.FormFile("myFile")
-	    if err != nil {
-	        fmt.Println(err)
-	        renderResponse(w, 400, "upload", map[string]interface{}{"msg": "Error receiving file!"})
-	    }
-	    defer file.Close()
+		// Parse our multipart form, 10 << 20 specifies a maximum upload of 10 MB files.
+		r.ParseMultipartForm(10 << 20)
+		file, handler, err := r.FormFile("myFile")
+		if err != nil {
+			fmt.Println(err)
+			renderResponse(w, 400, "upload", map[string]interface{}{"msg": "Error receiving file!"})
+		}
+		defer file.Close()
 
-	    // Create a temporary file within our temp-images directory that follows a particular naming pattern
-	    fileSave, err := ioutil.TempFile("monitored_folder", handler.Filename+"*")
-	    if err != nil {
-	        fmt.Println(err)
-	    }
-	    defer fileSave.Close()
+		// Create a temporary file within our temp-images directory that follows a particular naming pattern
+		fileSave, err := ioutil.TempFile("monitored_folder", handler.Filename+"*")
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer fileSave.Close()
 
-	    // read all of the contents of our uploaded file into a byte array
-	    fileBytes, err := ioutil.ReadAll(file)
-	    if err != nil {
-	        fmt.Println(err)
-	    }
+		// read all of the contents of our uploaded file into a byte array
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Println(err)
+		}
 
-	    // write this byte array to our temporary file
-	    fileSave.Write(fileBytes)
+		// write this byte array to our temporary file
+		fileSave.Write(fileBytes)
 		if _, err := fileSave.Write(fileBytes); err != nil {
 			log.Println(err)
 			renderResponse(w, 400, "upload", map[string]interface{}{"msg": "Something went wrong!"})
 		} else {
 			// return that we have successfully uploaded our file!
-			log.Printf( "Successfully Uploaded File: %s.\n", handler.Filename)
-		    renderResponse(w, 201, "upload", map[string]interface{}{"msg": "Upload successful!"})
+			log.Printf("Successfully Uploaded File: %s.\n", handler.Filename)
+			renderResponse(w, 201, "upload", map[string]interface{}{"msg": "Upload successful!"})
 		}
-    } else {
+	} else {
 		renderResponse(w, 405, "upload", map[string]interface{}{"msg": "Invalid request type!"})
-    }
+	}
 }
 
 // convenience function that selects the file name with highest compression rate from DB
@@ -109,7 +109,7 @@ func selectAvgCompRate(db *sql.DB) float64 {
 	}
 	defer rows.Close()
 
- 	var avg float64
+	var avg float64
 	for rows.Next() {
 		err = rows.Scan(&avg)
 		if err != nil {
@@ -132,7 +132,7 @@ func selectLatestLogs(db *sql.DB) []string {
 	defer rows.Close()
 
 	var data []string
- 	var avg float64
+	var avg float64
 	var time int
 	var name string
 	for rows.Next() {
@@ -158,9 +158,9 @@ func statsHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	renderResponse(w, 200, "stats",
-			map[string]interface{}{"highestCompRate": selectHighestComp(db),
-						 	       "averageCompRate": selectAvgCompRate(db),
-						           "lastLogs": selectLatestLogs(db)})
+		map[string]interface{}{"highestCompRate": selectHighestComp(db),
+			"averageCompRate": selectAvgCompRate(db),
+			"lastLogs":        selectLatestLogs(db)})
 }
 
 // function that wraps the SMTP api for sending email via GMAL
@@ -188,14 +188,14 @@ func emailHandler(w http.ResponseWriter, r *http.Request) {
 	// render page normally if request was GET
 	log.Println("Email handler hit with ...", r.Method)
 	if r.Method == "GET" {
-		renderResponse(w, 200, "email", map[string]interface{}{"msg":"Please give an API pw and email to sent to."})
-    // process form data and send email if request was POST
+		renderResponse(w, 200, "email", map[string]interface{}{"msg": "Please give an API pw and email to sent to."})
+		// process form data and send email if request was POST
 	} else if r.Method == "POST" {
 		// needed for parsing form data from HTML fields
 		err := r.ParseForm()
-	    if err != nil {
-	        log.Println(err)
-	    }
+		if err != nil {
+			log.Println(err)
+		}
 
 		// open DB connection to get some stats for the email
 		db, err := sql.Open("sqlite3", "stats.db")
@@ -214,9 +214,9 @@ func emailHandler(w http.ResponseWriter, r *http.Request) {
 
 		// check for any errors and render response accordingly
 		if err != nil {
-			renderResponse(w, 400, "email", map[string]interface{}{"msg":"Error sending email!"})
+			renderResponse(w, 400, "email", map[string]interface{}{"msg": "Error sending email!"})
 		} else {
-			renderResponse(w, 200, "email", map[string]interface{}{"msg":"Email sent with stats and updates."})
+			renderResponse(w, 200, "email", map[string]interface{}{"msg": "Email sent with stats and updates."})
 		}
 	}
 }
