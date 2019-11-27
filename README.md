@@ -6,6 +6,8 @@ The project was set up in a way that it can be deployed via Ansible, which uses 
 
 ![Ansible & Docker overview](static_files/overview.png)
 
+Youtube video screen cast with short demo of deployment and features: https://www.youtube.com/watch?v=gHDL8O-wcGQ&feature=youtu.be 
+
 ## Ansible setup process
 
 Follow these steps to install Ansible on the master host (assuming its Ubuntu/Debian based):
