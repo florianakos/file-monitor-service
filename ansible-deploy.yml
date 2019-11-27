@@ -34,7 +34,7 @@
 
     - name: "Build image"
       docker_image:
-        name: file-archive-service
+        name: file-monitoring-serice
         build:
           path: /home/flrnks/repo
           pull: true
@@ -44,7 +44,7 @@
     - name: Deploy archive service container on host
       become: true
       docker_container:
-        name: file-archive-service
-        image: file-archive-service
-        command: docker run -it -d -p 8080:8080/tcp file-archive-service
+        name: file-monitoring-serice
+        image: file-monitoring-serice
+        command: docker run -it -d -p 8080:8080/tcp file-monitoring-serice
         state: present
