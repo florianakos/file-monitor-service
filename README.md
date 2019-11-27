@@ -1,12 +1,14 @@
 # File monitoring service
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/florianakos/file-monitor-service)](https://goreportcard.com/report/github.com/florianakos/file-monitor-service)
+
 This repository hold a small project which implements a service that can monitor and compress files in a folder. For this purpose a web frontend was created that lets clients upload files , check event logs and request email notifications as well.
 
 The project was set up in a way that it can be deployed via Ansible, which uses the Dockerfile in the repo to build the container image used to run the service on as many hosts as needed. Below is an overview of the architecture which was used for development and testing.
 
 ![Ansible & Docker overview](static_files/overview.png)
 
-Youtube video screen cast with short demo of deployment and features: https://www.youtube.com/watch?v=gHDL8O-wcGQ&feature=youtu.be 
+Youtube video screen cast with short demo of deployment and features: https://www.youtube.com/watch?v=gHDL8O-wcGQ&feature=youtu.be
 
 ## Ansible setup process
 
