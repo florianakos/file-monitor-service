@@ -6,7 +6,7 @@ This repository hold a small project which implements a service that can monitor
 
 The project was set up in a way that it can be deployed via Ansible, which uses the Dockerfile in the repo to build the container image used to run the service on as many hosts as needed. Below is an overview of the architecture which was used for development and testing.
 
-![Ansible & Docker overview](static_files/overview.png)
+![Ansible & Docker overview](web-service/static_files/overview.png)
 
 Youtube video screen cast with short demo of deployment and features: https://www.youtube.com/watch?v=gHDL8O-wcGQ&feature=youtu.be
 
@@ -71,7 +71,7 @@ To request similar statistics via email, the user can navigate to `/email` where
 
 Here I will briefly explain the different features and components that make up this service.
 
-![Service Composition](static_files/service-composition.png)
+![Service Composition](web-service/static_files/service-composition.png)
 
 ### Monitor service
 
