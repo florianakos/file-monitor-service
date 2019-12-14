@@ -48,7 +48,7 @@ func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Parse our multipart form, 10 << 20 specifies a maximum upload of 10 MB files.
 		r.ParseMultipartForm(10 << 20)
-		remoteFile, handler, err := r.FormFile("myFile")
+		remoteFile, handler, _ := r.FormFile("myFile")
 		defer remoteFile.Close()
 
 		// create local file handler
@@ -65,7 +65,7 @@ func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			renderResponse(w, 400, "upload", map[string]interface{}{"msg": "Error trying to write from remote to local file!"})
 		} else {
-			log.Println("File ", handler.Filename, " uploaded successfull!")
+			log.Println("File ", handler.Filename, " uploaded successful!")
 			renderResponse(w, 201, "upload", map[string]interface{}{"msg": "Upload was successful!"})
 		}
 	} else {
