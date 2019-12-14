@@ -26,25 +26,27 @@
       pip:
         name: docker
 
+    - name: Install Docker-Compose Module for Python
+      pip:
+        name: docker-compose==1.25.0
+
+    - name: Install PyYAML Module for Python
+      pip:
+        name: PyYAML
+
+    - name: Install Docker Compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.25.0/docker-compose-Linux-x86_64
+        dest: "/usr/local/bin/docker-compose"
+        mode: 0755
+
     - name: Deploy git Rrepository
-      become: yes
       git:
         repo: https://github.com/florianakos/file-monitor-service.git
         dest: /home/flrnks/repo
+        force: yes
 
-    - name: "Build image"
-      docker_image:
-        name: file-monitoring-serice
-        build:
-          path: /home/flrnks/repo
-          pull: true
-        source: build
-
-    # Creates the number of containers defined by the variable create_containers, using default values
-    - name: Deploy archive service container on host
-      become: true
-      docker_container:
-        name: file-monitoring-serice
-        image: file-monitoring-serice
-        command: docker run -it -d -p 8080:8080/tcp file-monitoring-serice
-        state: present
+    - name: Create and start service
+      docker_compose:
+        project_src: /home/flrnks/repo
+        build: yes
