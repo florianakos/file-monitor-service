@@ -5,13 +5,13 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"html/template"
-	_"io/ioutil"
+	"io"
+	_ "io/ioutil"
 	"log"
 	"net/http"
 	"net/smtp"
-	"strings"
 	"os"
-	"io"
+	"strings"
 )
 
 // function that renders the correct html template with given data
@@ -45,29 +45,29 @@ func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == "POST" {
 		// log message for reference
 		log.Println("HTTP POST on /upload")
-		
+
 		// Parse our multipart form, 10 << 20 specifies a maximum upload of 10 MB files.
 		r.ParseMultipartForm(10 << 20)
-		remote_file, handler, err := r.FormFile("myFile")
-		defer remote_file.Close()
+		remoteFile, handler, err := r.FormFile("myFile")
+		defer remoteFile.Close()
 
 		// create local file handler
-		local_file, err := os.OpenFile("./monitored_folder/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+		localFile, err := os.OpenFile("./monitored_folder/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			log.Println(err)
 			renderResponse(w, 400, "upload", map[string]interface{}{"msg": "Error creating local file handler!"})
 		}
-		defer local_file.Close()
-		
+		defer localFile.Close()
+
 		// do actual copying -- works with larger files as well
-		_, err = io.Copy(local_file, remote_file)
+		_, err = io.Copy(localFile, remoteFile)
 		if err != nil {
 			log.Println(err)
 			renderResponse(w, 400, "upload", map[string]interface{}{"msg": "Error trying to write from remote to local file!"})
 		} else {
 			log.Println("File ", handler.Filename, " uploaded successfull!")
 			renderResponse(w, 201, "upload", map[string]interface{}{"msg": "Upload was successful!"})
-		}		
+		}
 	} else {
 		log.Println("Invalid HTTP request type")
 		renderResponse(w, 405, "upload", map[string]interface{}{"msg": "Invalid request type!"})
