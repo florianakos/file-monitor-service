@@ -88,3 +88,16 @@ A `Dockerfile` is used to define an container image that gets created on each An
 ### Ansible Playbook
 
 The file `ansible-deploy.yml` is used to define how the docker image is built and deployed on the Ansible remote hosts. Before the docker image can be built, some packages are installed on each host as a prerequisite. The final two tasks in the playbook achieve the actual build and run of the container.
+
+## Version 2.0
+
+Some improvements have been made to the first version of this application when it comes to Docker and Ansible. In order to better align with the `microservice` style architecture, the Dockerfile was split into 2 parts:
+
+* `Web-service`: upload, email, statistics
+* `Monitor-service`: inotify
+
+To enable the interaction between containers, some folders from the host file system have been mounted to both containers. See the respective Dockerfiles for details.
+
+When it comes to Ansible, now the playbook does not have to specify the build and run phases, but rather uses the `docker_compose` module to start the service in one run with the docker-compose.yml file included in the project.
+
+![Service Composition](web-service/static_files/microservice.png)
