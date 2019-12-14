@@ -1,0 +1,19 @@
+version: '3'
+services: 
+    webserver:
+        build:
+            context: ./web-service
+        ports:
+            - '8080:8080'
+        volumes:
+            - ./database:/home/webserver/database
+            - ./web-service/static_files:/home/webserver/static_files
+            - ./monitored_folder:/home/webserver/monitored_folder
+    monitor:
+        build:
+            context: ./monitor-service
+        volumes:
+            - ./database:/home/monitor/database
+            - ./logs:/home/monitor/logs/
+            - ./monitored_folder:/home/monitor/monitored_folder
+            - ./processed_files:/home/monitor/processed_files
